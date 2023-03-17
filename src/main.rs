@@ -1,9 +1,10 @@
-use std::{net::SocketAddr, path::PathBuf, sync::Arc};
-
-use axum::{routing::get, Router};
+mod frontend;
 mod stats;
+use axum::{routing::get, Router};
 use clap::Parser;
+use frontend::get_frontend_router;
 use stats::get_stats;
+use std::{net::SocketAddr, path::PathBuf, sync::Arc};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -29,9 +30,9 @@ async fn main() {
   });
 
   let app = Router::new()
-    .route("/", get(|| async { "Hello, World!" }))
     .route("/api/getStats", get(get_stats))
-    .with_state(app_state);
+    .with_state(app_state)
+    .nest("/", get_frontend_router());
 
   let addr = SocketAddr::from(([0, 0, 0, 0], args.port));
   println!("listening on {}", addr);
@@ -40,15 +41,3 @@ async fn main() {
     .await
     .unwrap();
 }
-
-// fn check_dir_exists(s: &str) -> Result<(), String> {
-//   if let Ok(metadata) = std::fs::metadata(s) {
-//     if metadata.is_dir() {
-//       Ok(())
-//     } else {
-//       Err("Not a directory".to_string())
-//     }
-//   } else {
-//     Err("Directory does not exist".to_string())
-//   }
-// }

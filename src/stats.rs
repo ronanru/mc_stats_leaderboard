@@ -57,12 +57,7 @@ pub async fn get_stats(
     }
   }
   stats.sort_by(|a, b| b.stat.cmp(&a.stat));
-
   let start_index = params.page.unwrap_or(0) * 50;
-  let stats = stats
-    .get(start_index..start_index + 50)
-    .unwrap_or_default()
-    .to_vec();
-
+  stats = stats[start_index..std::cmp::min(start_index + 50, stats.len())].to_vec();
   Json(stats)
 }
