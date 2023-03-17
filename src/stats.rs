@@ -1,17 +1,23 @@
-use axum::{extract::Query, Json};
+use axum::{
+  extract::{Query, State},
+  Json,
+};
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
 use tokio::fs::{read_dir, read_to_string};
 
 mod usernames;
 use usernames::uuid_to_nickname;
 
-#[derive(Serialize)]
+use crate::AppState;
+
+#[derive(Serialize, Clone)]
 pub struct Player {
   uuid: String,
   nickname: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 pub struct Stat {
   player: Player,
   stat: u32,
@@ -19,13 +25,16 @@ pub struct Stat {
 
 #[derive(Deserialize)]
 pub struct GetStatsParams {
-  // page: usize,
+  page: Option<usize>,
   group: String,
   stat: String,
 }
 
-pub async fn get_stats(params: Query<GetStatsParams>) -> Json<Vec<Stat>> {
-  let mut files = read_dir("data").await.unwrap();
+pub async fn get_stats(
+  params: Query<GetStatsParams>,
+  State(state): State<Arc<AppState>>,
+) -> Json<Vec<Stat>> {
+  let mut files = read_dir(&state.data_dir).await.unwrap();
 
   let mut stats = Vec::new();
 
@@ -48,5 +57,12 @@ pub async fn get_stats(params: Query<GetStatsParams>) -> Json<Vec<Stat>> {
     }
   }
   stats.sort_by(|a, b| b.stat.cmp(&a.stat));
+
+  let start_index = params.page.unwrap_or(0) * 50;
+  let stats = stats
+    .get(start_index..start_index + 50)
+    .unwrap_or_default()
+    .to_vec();
+
   Json(stats)
 }
