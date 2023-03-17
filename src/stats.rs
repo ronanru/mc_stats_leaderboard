@@ -20,7 +20,7 @@ pub struct Player {
 #[derive(Serialize, Clone)]
 pub struct Stat {
   player: Player,
-  stat: u32,
+  value: u32,
 }
 
 #[derive(Deserialize)]
@@ -41,7 +41,7 @@ pub async fn get_stats(
   while let Some(file) = files.next_entry().await.unwrap() {
     let json = json::parse(&read_to_string(file.path()).await.unwrap()).unwrap();
 
-    if let Some(stat) = json["stats"][&params.group][&params.stat].as_u32() {
+    if let Some(value) = json["stats"][&params.group][&params.stat].as_u32() {
       let uuid = file
         .file_name()
         .into_string()
@@ -52,11 +52,11 @@ pub async fn get_stats(
       let nickname = uuid_to_nickname(&uuid).await.unwrap();
       stats.push(Stat {
         player: Player { uuid, nickname },
-        stat,
+        value,
       });
     }
   }
-  stats.sort_by(|a, b| b.stat.cmp(&a.stat));
+  stats.sort_by(|a, b| b.value.cmp(&a.value));
   let start_index = params.page.unwrap_or(0) * 50;
   stats = stats[start_index..std::cmp::min(start_index + 50, stats.len())].to_vec();
   Json(stats)
