@@ -7,10 +7,17 @@
     <link rel="shortcut icon" type="image/ico" href="/src/assets/favicon.ico" />
     <title>MC Stats Viewer</title>
   </head>
-  <body>
+  <body class="flex min-h-screen flex-col bg-zinc-900 text-zinc-100">
+    <header class="bg-zinc-800">
+      <div class="container p-2">
+        <h1 class="text-2xl font-bold">MC Stats Viever</h1>
+      </div>
+    </header>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-
+    <main class="container mx-auto mt-4 flex-1 space-y-4 px-2"></main>
+    <footer class="container p-2 text-center">
+      <p>Crafted by RonanRU and uuuuuno</p>
+    </footer>
     <script src="/src/index.tsx" type="module"></script>
   </body>
 </html>
