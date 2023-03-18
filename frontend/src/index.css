@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  @apply scroll-smooth bg-zinc-900 text-zinc-100;
+}
+
+.btn {
+  @apply cursor-pointer rounded-md py-1.5 px-6 text-center font-medium transition-colors duration-300 hover:bg-zinc-900;
+}
+
+.custom-scroll {
+  @apply scrollbar scrollbar-track-transparent scrollbar-thumb-zinc-900 scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-h-2;
+}
