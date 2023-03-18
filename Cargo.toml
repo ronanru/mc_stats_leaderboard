@@ -1,11 +1,11 @@
 [package]
-name = "mc_stats_viewer"
+name = "mc_stats_leaderboard"
 version = "0.1.0"
 edition = "2021"
 authors = ["Matvey Ryabchikov"]
 license = "BSD-2-Clause"
 description = "A simple web server that displays statistics leaderboards for your Minecraft server"
-repository = "https://github.com/ronanru/mc_stats_viewer"
+repository = "https://github.com/ronanru/mc_stats_leaderboard"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

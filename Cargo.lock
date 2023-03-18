@@ -520,7 +520,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b87248edafb776e59e6ee64a79086f65890d3510f2c656c000bf2a7e8a0aea40"
 
 [[package]]
-name = "mc_stats_viewer"
+name = "mc_stats_leaderboard"
 version = "0.1.0"
 dependencies = [
  "axum",
