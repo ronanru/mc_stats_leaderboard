@@ -1,14 +1,25 @@
-import type { Component } from 'solid-js';
+import clsx from 'clsx';
+import { Component, createSignal } from 'solid-js';
 import Card from './components/Card';
 import ImgBtn from './components/ImgBtn';
+import Select from './components/Select';
+import { upperCaseFirstLetter } from './utils';
 
 const App: Component = () => {
+  const groups = ['general', 'items', 'mobs'];
+
+  const [group, setGroup] = createSignal<(typeof groups)[number]>(groups[0]);
+
   return (
     <>
-      <section class="custom-scroll flex items-center gap-2 overflow-x-auto rounded-xl bg-zinc-800 py-2 px-4">
-        <button class="btn bg-zinc-900">Items</button>
-        <button class="btn">Mobs</button>
-        <button class="btn">General</button>
+      <section class="custom-scroll grid grid-cols-3 items-center gap-2 overflow-x-auto rounded-xl bg-zinc-800 py-2 px-4 sm:flex">
+        {groups.map(g => (
+          <button
+            class={clsx(['btn', group() === g && 'bg-zinc-900'])}
+            onClick={() => setGroup(g)}>
+            {upperCaseFirstLetter(g)}
+          </button>
+        ))}
       </section>
       <section class="space-y-2 rounded-xl bg-zinc-800 p-4">
         <form class="items-center gap-4 space-y-4 md:flex md:space-y-0 ">
@@ -16,13 +27,13 @@ const App: Component = () => {
             id="Input"
             type="text"
             class="h-10 w-full rounded-lg bg-zinc-900 p-1.5 text-xl text-white"
-            name=""
             placeholder="Block id"
           />
-          <select class="h-10 w-full rounded-lg bg-zinc-900 p-1.5 text-xl text-white">
+          {/* <select class="h-10 w-full rounded-lg bg-zinc-900 p-1.5 text-xl text-white">
             <option>Lorem, ipsum.</option>
             <option>Lorem, ipsum dolor.</option>
-          </select>
+          </select> */}
+          <Select></Select>
         </form>
         <div class="custom-scroll flex gap-3 overflow-x-auto text-sm">
           <ImgBtn></ImgBtn>

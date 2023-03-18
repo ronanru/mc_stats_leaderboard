@@ -9,6 +9,7 @@ const Card: Component = () => (
           src="https://visage.surgeplay.com/face/12/4658c32b0e9e4070949cb454aad5b43f"
           alt="RonanRU"
           class="rounded-md"
+          loading="lazy"
         />
         RonanRU
       </div>

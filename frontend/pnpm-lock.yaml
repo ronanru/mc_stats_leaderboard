@@ -1,7 +1,9 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@thisbeyond/solid-select': ^0.13.0
   autoprefixer: ^10.4.14
+  clsx: ^1.2.1
   postcss: ^8.4.21
   prettier: ^2.8.4
   prettier-plugin-organize-imports: ^3.2.2
@@ -14,6 +16,8 @@ specifiers:
   vite-plugin-solid: ^2.5.0
 
 dependencies:
+  '@thisbeyond/solid-select': 0.13.0_solid-js@1.6.10
+  clsx: 1.2.1
   solid-js: 1.6.10
 
 devDependencies:
@@ -602,6 +606,14 @@ packages:
       fastq: 1.15.0
     dev: true
 
+  /@thisbeyond/solid-select/0.13.0_solid-js@1.6.10:
+    resolution: {integrity: sha512-eION+Xf8TGLs1NZrvRo1NRKOl4plYMbY7UswHhh5bEUY8oMltjrBhUWF0hzaFViEc1zZpkCQyafaD89iofG6Tg==}
+    peerDependencies:
+      solid-js: ^1.5
+    dependencies:
+      solid-js: 1.6.10
+    dev: false
+
   /acorn-node/1.8.2:
     resolution: {integrity: sha512-8mt+fslDufLYntIoPAaIMUe/lrbrehIiwmR3t2k9LljIzoigEPF27eLk2hy8zSGzmR/ogr7zbRKINMo1u0yh5A==}
     dependencies:
@@ -747,6 +759,11 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
+
+  /clsx/1.2.1:
+    resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
+    engines: {node: '>=6'}
+    dev: false
 
   /color-convert/1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
