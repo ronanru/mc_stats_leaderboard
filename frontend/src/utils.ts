@@ -1,2 +1,5 @@
 export const upperCaseFirstLetter = (str: string) =>
-  str.charAt(0).toUpperCase() + str.slice(1);
+  str
+    .split('_')
+    .map(word => word[0].toUpperCase() + word.slice(1))
+    .join(' ');

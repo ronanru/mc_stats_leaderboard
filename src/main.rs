@@ -30,7 +30,7 @@ async fn main() {
   });
 
   let app = Router::new()
-    .route("/api/getStats", get(get_stats))
+    .route("/api/stats", get(get_stats))
     .with_state(app_state)
     .nest("/", get_frontend_router());
 
