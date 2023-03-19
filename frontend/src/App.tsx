@@ -53,9 +53,12 @@ const App: Component = () => {
 
   return (
     <>
-      <section class="custom-scroll grid grid-cols-3 items-center gap-2 overflow-x-auto rounded-xl bg-zinc-800 py-2 px-4 sm:flex">
+      <section
+        role="tablist"
+        class="custom-scroll grid grid-cols-3 items-center gap-2 overflow-x-auto rounded-xl bg-zinc-800 py-2 px-4 sm:flex">
         {Object.keys(groups).map(g => (
           <button
+            role="tab"
             class={clsx(['btn', groups[g].includes(group()) && 'bg-zinc-900'])}
             onClick={() => setGroup(groups[g][0])}>
             {upperCaseFirstLetter(g)}
