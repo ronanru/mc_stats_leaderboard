@@ -68,29 +68,44 @@ const Select: Component<{
   };
 
   return (
-    <div class="relative" id={`select-${id}`} onKeyDown={onKeyDown}>
-      <div class="bg-zinc-900 p-4">
+    <div class="relative z-50" id={`select-${id}`} onKeyDown={onKeyDown}>
+      <div>
         <label
-          class="block text-sm font-medium text-gray-300"
+          class="text-md block font-medium text-gray-300"
           for={`select-button-${id}`}>
           {props.label}
         </label>
-        <button
-          class="bg-transparent"
-          type="button"
-          role="combobox"
-          aria-expanded={isOpen()}
-          aria-haspopup="true"
-          aria-controls={isOpen() ? `select-options-${id}` : undefined}
-          onClick={() => setIsOpen(!isOpen())}
-          id={`select-button-${id}`}>
-          {props.items.find(item => item.value === props.value)?.name}
-        </button>
+        <div class="flex items-center">
+          <button
+            class="w-full rounded-lg bg-zinc-900 p-2 text-left text-xl"
+            type="button"
+            role="combobox"
+            aria-expanded={isOpen()}
+            aria-haspopup="true"
+            aria-controls={isOpen() ? `select-options-${id}` : undefined}
+            onClick={() => setIsOpen(!isOpen())}
+            id={`select-button-${id}`}>
+            {props.items.find(item => item.value === props.value)?.name}
+          </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="pointer-events-none absolute right-2 h-6 w-6">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+            />
+          </svg>
+        </div>
       </div>
       {isOpen() && (
         <ul
           ref={ul}
-          class="absolute w-full bg-zinc-900"
+          class="custom-scroll absolute max-h-96 w-full overflow-y-auto rounded-lg border border-zinc-900 bg-zinc-700 shadow-xl"
           id={`select-options-${id}`}
           role="listbox"
           aria-activedescendant={`select-option-${id}-${selectedValue()}`}>
@@ -103,7 +118,7 @@ const Select: Component<{
               onMouseOver={() => setSelectedValue(item.value)}
               data-value={item.value}
               class={clsx([
-                'block w-full cursor-pointer p-4 text-left',
+                'block w-full cursor-pointer p-2 text-left',
                 item.value === selectedValue() && 'bg-zinc-800',
               ])}
               id={`select-option-${id}-${item.value}`}>

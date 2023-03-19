@@ -62,7 +62,7 @@ const App: Component = () => {
           </button>
         ))}
       </section>
-      <section class="grid gap-2 rounded-xl bg-zinc-800 p-4">
+      <section class="grid grid-cols-[repeat(auto-fit,_minmax(0px,_1fr))] gap-2 rounded-xl bg-zinc-800 p-4">
         {groups[currentGroup()].length > 1 && (
           <Select
             label="Group"
