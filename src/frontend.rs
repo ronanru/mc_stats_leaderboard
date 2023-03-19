@@ -14,10 +14,10 @@ use include_dir::include_dir;
 static FRONTEND_DIR: include_dir::Dir = include_dir!("./frontend/dist");
 
 struct FrontendState {
-  server_name: Option<String>,
+  server_name: String,
 }
 
-pub fn get_frontend_router(server_name: Option<String>) -> axum::Router {
+pub fn get_frontend_router(server_name: String) -> axum::Router {
   let frontend_state = Arc::new(FrontendState { server_name });
 
   Router::new()
@@ -33,10 +33,7 @@ async fn index(State(state): State<Arc<FrontendState>>) -> Html<String> {
       .unwrap()
       .contents_utf8()
       .unwrap()
-      .replace(
-        "{{serverName}}",
-        &state.server_name.clone().unwrap_or("MC".to_string()),
-      )
+      .replace("{{serverName}}", &state.server_name)
       .to_string(),
   )
 }

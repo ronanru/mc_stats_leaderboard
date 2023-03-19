@@ -4,7 +4,7 @@ use axum::{routing::get, Router};
 use clap::Parser;
 use frontend::get_frontend_router;
 use stats::get_stats;
-use std::{net::SocketAddr, path::PathBuf, sync::Arc};
+use std::{env, net::SocketAddr, path::PathBuf, sync::Arc};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -38,7 +38,14 @@ async fn main() {
   let app = Router::new()
     .route("/api/stats", get(get_stats))
     .with_state(app_state)
-    .nest("/", get_frontend_router(args.server_name));
+    .nest(
+      "/",
+      get_frontend_router(
+        args
+          .server_name
+          .unwrap_or(env::var("MC_SERVER_NAME").unwrap_or("MC".to_string())),
+      ),
+    );
 
   let addr = SocketAddr::from(([0, 0, 0, 0], args.port));
   println!("listening on http://{}", addr);
