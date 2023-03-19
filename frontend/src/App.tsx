@@ -28,6 +28,19 @@ const App: Component = () => {
     setStat(Object.keys(statNames[currentGroup()])[0]);
   });
 
+  const format = (value: number) => {
+    if (stat().endsWith('_cm')) return `${(value / 100000).toFixed(2)}km`;
+    if (currentGroup() === 'items' && value > 64)
+      return `${(value / 64).toFixed(2)} stacks`;
+    if (stat().endsWith('_time') || stat().startsWith('time_')) {
+      if (value > 86400) return `${(value / 86400).toFixed(2)} days`;
+      if (value > 3600) return `${(value / 3600).toFixed(2)} hours`;
+      if (value > 60) return `${(value / 60).toFixed(2)} minutes`;
+      return `${value.toFixed(2)} seconds`;
+    }
+    return value.toString();
+  };
+
   createEffect(() => {
     getStats({
       group: `minecraft:${group()}`,
@@ -108,7 +121,7 @@ const App: Component = () => {
                 />
                 {player.nickname}
               </div>
-              <span class="proportional-nums">{value}</span>
+              <span class="proportional-nums">{format(value)}</span>
             </div>
           ))}
           {page() !== -1 && <ScrollDetector onScroll={loadMore} />}
