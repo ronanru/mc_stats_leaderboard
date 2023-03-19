@@ -1,5 +1,7 @@
 import clsx from 'clsx';
+import Fuze from 'fuse.js';
 import {
+  createEffect,
   createSignal,
   createUniqueId,
   onCleanup,
@@ -8,50 +10,59 @@ import {
 
 type Item = { value: string; name: string };
 
-const Select: Component<{
+const SearchSelect: Component<{
   items: Item[];
   value: string;
   label: string;
   onChange?: (value: string) => void;
 }> = props => {
   const [isOpen, setIsOpen] = createSignal(false);
+  const [inputValue, setInputValue] = createSignal(
+    props.items.find(item => item.value === props.value)?.name || ''
+  );
   const [selectedValue, setSelectedValue] = createSignal(props.value);
 
   const id = createUniqueId();
 
+  const fuseResult = () =>
+    new Fuze(props.items, {
+      keys: ['name'],
+    }).search(inputValue());
+
   const onWindowClick = (e: MouseEvent) =>
     e.target instanceof HTMLElement &&
-    !e.target.closest(`#select-${id}`) &&
+    !e.target.closest(`#searchselect-${id}`) &&
     setIsOpen(false);
 
   window.addEventListener('click', onWindowClick);
   onCleanup(() => window.removeEventListener('click', onWindowClick));
 
-  const setValue = (value: string) => {
-    props.onChange?.(value);
-    setSelectedValue(value);
-    setIsOpen(false);
-  };
+  createEffect(() => {
+    setInputValue(
+      props.items.find(item => item.value === props.value)?.name || ''
+    );
+  });
 
   let ul: HTMLUListElement | undefined;
 
-  const onKeyDown = (e: KeyboardEvent) => {
-    if (
-      !['ArrowUp', 'ArrowDown', 'KeyJ', 'KeyK', 'Space', 'Enter'].includes(
-        e.code
-      )
+  const shownItems = () =>
+    (fuseResult().length
+      ? fuseResult()
+      : props.items.map(item => ({ item, score: 0 }))
     )
-      return;
+      .slice(0, 50)
+      .map(({ item }) => item);
+
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (!['ArrowUp', 'ArrowDown', 'Space', 'Enter'].includes(e.code)) return;
     e.preventDefault();
     switch (e.code) {
       case 'ArrowDown':
-      case 'ArrowUp':
-      case 'KeyJ':
-      case 'KeyK': {
-        const newItem = props.items.at(
-          (props.items.findIndex(({ value }) => value === selectedValue()) +
-            (['ArrowDown', 'KeyJ'].includes(e.code) ? 1 : -1)) %
-            props.items.length
+      case 'ArrowUp': {
+        const newItem = shownItems().at(
+          (shownItems().findIndex(({ value }) => value === selectedValue()) +
+            (e.code === 'ArrowDown' ? 1 : -1)) %
+            shownItems().length
         );
         if (!newItem) break;
         setSelectedValue(newItem.value);
@@ -67,34 +78,48 @@ const Select: Component<{
     }
   };
 
+  const setValue = (value: string) => {
+    props.onChange?.(value);
+    setSelectedValue(value);
+    setIsOpen(false);
+  };
+
   return (
-    <div class="relative" id={`select-${id}`} onKeyDown={onKeyDown}>
+    <div class="relative" id={`searchselect-${id}`} onKeyDown={onKeyDown}>
       <div class="bg-zinc-900 p-4">
         <label
           class="block text-sm font-medium text-gray-300"
-          for={`select-button-${id}`}>
+          for={`searchselect-input-${id}`}>
           {props.label}
         </label>
-        <button
+        <input
           class="bg-transparent"
-          type="button"
+          type="text"
           role="combobox"
+          value={inputValue()}
           aria-expanded={isOpen()}
-          aria-haspopup="true"
-          aria-controls={isOpen() ? `select-options-${id}` : undefined}
-          onClick={() => setIsOpen(!isOpen())}
-          id={`select-button-${id}`}>
-          {props.items.find(item => item.value === props.value)?.name}
-        </button>
+          aria-controls={isOpen() ? `searchselect-options-${id}` : undefined}
+          aria-autocomplete="list"
+          onFocus={() => {
+            setIsOpen(true);
+            setInputValue('');
+          }}
+          onBlur={() => setIsOpen(false)}
+          onInput={e => {
+            setInputValue(e.currentTarget.value);
+            setIsOpen(true);
+          }}
+          id={`searchselect-input-${id}`}
+        />
       </div>
       {isOpen() && (
         <ul
           ref={ul}
           class="absolute w-full bg-zinc-900"
-          id={`select-options-${id}`}
+          id={`searchselect-options-${id}`}
           role="listbox"
-          aria-activedescendant={`select-option-${id}-${selectedValue()}`}>
-          {props.items.map(item => (
+          aria-activedescendant={`searchselect-option-${id}-${selectedValue()}`}>
+          {shownItems().map(item => (
             <li
               tabIndex={-1}
               role="option"
@@ -106,7 +131,7 @@ const Select: Component<{
                 'block w-full cursor-pointer p-4 text-left',
                 item.value === selectedValue() && 'bg-zinc-800',
               ])}
-              id={`select-option-${id}-${item.value}`}>
+              id={`searchselect-option-${id}-${item.value}`}>
               {item.name}
             </li>
           ))}
@@ -116,4 +141,4 @@ const Select: Component<{
   );
 };
 
-export default Select;
+export default SearchSelect;

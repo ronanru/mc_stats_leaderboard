@@ -1,8 +1,14 @@
+import solidDevtoolsPlugin from 'solid-devtools/vite';
 import { defineConfig } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
 
 export default defineConfig({
-  plugins: [solidPlugin()],
+  plugins: [
+    solidDevtoolsPlugin({
+      autoname: true,
+    }),
+    solidPlugin(),
+  ],
   server: {
     port: 4000,
     proxy: {

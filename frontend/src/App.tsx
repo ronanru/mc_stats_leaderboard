@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { Component, createEffect, createSignal } from 'solid-js';
 import { getStats, Stat } from './api';
+import SearchSelect from './components/SearchSelect';
 import Select from './components/Select';
 import statNames from './statNames';
 import { upperCaseFirstLetter } from './utils';
@@ -13,39 +14,29 @@ const groups = {
 
 const App: Component = () => {
   const [group, setGroup] = createSignal<string>('custom');
-  const [page, setPage] = createSignal(0);
+  // const [page, setPage] = createSignal(0);
   const [stat, setStat] = createSignal<string>(
     Object.keys(statNames.general)[0]
   );
   const [stats, setStats] = createSignal<Stat[]>([]);
 
+  const currentGroup = () =>
+    Object.entries(groups).find(([_, g]) => g.includes(group()))![0];
+
   createEffect(() => {
-    const g = Object.entries(groups).find(([_, g]) => g.includes(group()))![0];
-    setStat(Object.keys(statNames[g])[0]);
+    setStat(Object.keys(statNames[currentGroup()])[0]);
   });
 
   createEffect(() => {
     getStats({
-      group: group(),
-      stat: stat(),
-      page: page(),
+      group: `minecraft:${group()}`,
+      stat: `minecraft:${stat()}`,
+      page: 0,
     }).then(setStats);
   });
 
   return (
     <>
-      <pre>
-        {JSON.stringify(
-          Object.entries(groups)
-            .find(([_, g]) => g.includes(group()))![1]
-            .map(id => ({
-              value: id,
-              name: upperCaseFirstLetter(id),
-            })),
-          null,
-          2
-        )}
-      </pre>
       <section class="custom-scroll grid grid-cols-3 items-center gap-2 overflow-x-auto rounded-xl bg-zinc-800 py-2 px-4 sm:flex">
         {Object.keys(groups).map(g => (
           <button
@@ -55,26 +46,39 @@ const App: Component = () => {
           </button>
         ))}
       </section>
-      <section class="grid grid-cols-2 gap-2 rounded-xl bg-zinc-800 p-4">
-        <Select
-          items={Object.entries(groups)
-            .find(([_, g]) => g.includes(group()))![1]
-            .map(id => ({
+      <section class="grid gap-2 rounded-xl bg-zinc-800 p-4">
+        {groups[currentGroup()].length > 1 && (
+          <Select
+            label="Group"
+            items={groups[currentGroup()].map(id => ({
               value: id,
               name: upperCaseFirstLetter(id),
             }))}
-          value={group()}
-          onChange={setGroup}
+            value={group()}
+            onChange={setGroup}
+          />
+        )}
+        <SearchSelect
+          label="Stat"
+          value={stat()}
+          onChange={setStat}
+          items={Object.entries(statNames[currentGroup()]).map(
+            ([value, name]) => ({
+              value,
+              name,
+            })
+          )}
         />
-        {/* <Select></Select> */}
       </section>
-      <section class="space-y-2 rounded-xl bg-zinc-800 p-4">
+      <section class="space-y-2 rounded-xl bg-zinc-800 p-4" role="table">
         <div class="space-y-2">
-          {stats.length === 0 && <p>No data found.</p>}
-          {stats().map(({ player, value }) => (
-            <div class="flex items-center justify-between rounded-lg bg-zinc-900 p-2">
+          {stats().length === 0 && <p>No data found.</p>}
+          {stats().map(({ player, value }, i) => (
+            <div
+              class="flex items-center justify-between rounded-lg bg-zinc-900 p-2"
+              role="row">
               <div class="flex items-center gap-2">
-                <p class="text-xl font-bold">#1</p>
+                <p class="text-xl font-bold">#{i + 1}</p>
                 <img
                   src={`https://visage.surgeplay.com/face/12/${player.uuid}`}
                   alt=""
