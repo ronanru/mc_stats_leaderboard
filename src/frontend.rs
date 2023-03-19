@@ -1,8 +1,8 @@
-use std::convert::Infallible;
+use std::{convert::Infallible, sync::Arc};
 
 use axum::{
   body::Body,
-  extract::Path,
+  extract::{Path, State},
   http::{header, HeaderValue, StatusCode},
   response::Html,
   response::Response,
@@ -13,19 +13,30 @@ use include_dir::include_dir;
 
 static FRONTEND_DIR: include_dir::Dir = include_dir!("./frontend/dist");
 
-pub fn get_frontend_router() -> axum::Router {
+struct FrontendState {
+  server_name: Option<String>,
+}
+
+pub fn get_frontend_router(server_name: Option<String>) -> axum::Router {
+  let frontend_state = Arc::new(FrontendState { server_name });
+
   Router::new()
     .route("/", get(index))
     .route("/assets/:filename", get(assets))
+    .with_state(frontend_state)
 }
 
-async fn index() -> Html<String> {
+async fn index(State(state): State<Arc<FrontendState>>) -> Html<String> {
   Html(
     FRONTEND_DIR
       .get_file("index.html")
       .unwrap()
       .contents_utf8()
       .unwrap()
+      .replace(
+        "{{serverName}}",
+        &state.server_name.clone().unwrap_or("MC".to_string()),
+      )
       .to_string(),
   )
 }
