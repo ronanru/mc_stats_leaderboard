@@ -3,7 +3,7 @@ use axum::{
   Json,
 };
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
+use std::{cmp::min, sync::Arc};
 use tokio::fs::{read_dir, read_to_string};
 
 mod usernames;
@@ -58,6 +58,10 @@ pub async fn get_stats(
   }
   stats.sort_by(|a, b| b.value.cmp(&a.value));
   let start_index = params.page.unwrap_or(0) * 50;
-  stats = stats[start_index..std::cmp::min(start_index + 50, stats.len())].to_vec();
-  Json(stats)
+  if start_index >= stats.len() {
+    Json(vec![])
+  } else {
+    stats = stats[start_index..min(start_index + 50, stats.len())].to_vec();
+    Json(stats)
+  }
 }

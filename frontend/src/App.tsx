@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { Component, createEffect, createSignal } from 'solid-js';
 import { getStats, Stat } from './api';
+import ScrollDetector from './components/ScrollDetector';
 import SearchSelect from './components/SearchSelect';
 import Select from './components/Select';
 import statNames from './statNames';
@@ -14,7 +15,7 @@ const groups = {
 
 const App: Component = () => {
   const [group, setGroup] = createSignal<string>('custom');
-  // const [page, setPage] = createSignal(0);
+  const [page, setPage] = createSignal(0);
   const [stat, setStat] = createSignal<string>(
     Object.keys(statNames.general)[0]
   );
@@ -32,8 +33,23 @@ const App: Component = () => {
       group: `minecraft:${group()}`,
       stat: `minecraft:${stat()}`,
       page: 0,
-    }).then(setStats);
+    }).then(stats => {
+      setPage(stats.length ? 0 : -1);
+      setStats(stats);
+    });
   });
+
+  const loadMore = () => {
+    if (page() === -1) return;
+    getStats({
+      group: `minecraft:${group()}`,
+      stat: `minecraft:${stat()}`,
+      page: page() + 1,
+    }).then(newStats => {
+      setPage(newStats.length ? page() + 1 : -1);
+      setStats([...stats(), ...newStats]);
+    });
+  };
 
   return (
     <>
@@ -80,16 +96,19 @@ const App: Component = () => {
               <div class="flex items-center gap-2">
                 <p class="text-xl font-bold">#{i + 1}</p>
                 <img
-                  src={`https://visage.surgeplay.com/face/12/${player.uuid}`}
+                  src={`https://visage.surgeplay.com/face/32/${player.uuid}`}
                   alt=""
+                  width={32}
+                  height={32}
                   class="rounded-md"
                   loading="lazy"
                 />
                 {player.nickname}
               </div>
-              {value}
+              <span class="proportional-nums">{value}</span>
             </div>
           ))}
+          {page() !== -1 && <ScrollDetector onScroll={loadMore} />}
         </div>
       </section>
     </>
