@@ -11,10 +11,11 @@ const groups = {
   general: ['custom'],
   items: ['crafted', 'mined', 'picked_up', 'dropped', 'broken', 'used'],
   mobs: ['killed', 'killed_by'],
-} as Record<string, string[]>;
+} as const;
 
 const App: Component = () => {
-  const [group, setGroup] = createSignal<string>('custom');
+  const [group, setGroup] =
+    createSignal<(typeof groups)[keyof typeof groups][number]>('custom');
   const [page, setPage] = createSignal(0);
   const [stat, setStat] = createSignal<string>(
     Object.keys(statNames.general)[0]
@@ -22,7 +23,9 @@ const App: Component = () => {
   const [stats, setStats] = createSignal<Stat[]>([]);
 
   const currentGroup = () =>
-    Object.entries(groups).find(([_, g]) => g.includes(group()))![0];
+    Object.entries(groups).find(
+      ([_, g]) => group() in g
+    )![0] as keyof typeof groups;
 
   createEffect(() => {
     setStat(Object.keys(statNames[currentGroup()])[0]);
@@ -69,10 +72,10 @@ const App: Component = () => {
       <section
         role="tablist"
         class="custom-scroll grid grid-cols-3 items-center gap-2 overflow-x-auto rounded-xl bg-zinc-800 py-2 px-4 sm:flex">
-        {Object.keys(groups).map(g => (
+        {(Object.keys(groups) as (keyof typeof groups)[]).map(g => (
           <button
             role="tab"
-            class={clsx(['btn', groups[g].includes(group()) && 'bg-zinc-900'])}
+            class={clsx(['btn', group() in groups[g] && 'bg-zinc-900'])}
             onClick={() => setGroup(groups[g][0])}>
             {upperCaseFirstLetter(g)}
           </button>

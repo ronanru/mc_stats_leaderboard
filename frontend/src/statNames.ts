@@ -1561,6 +1561,6 @@ const statNames = {
     walk_one_cm: 'Distance Walked',
     walk_under_water_one_cm: 'Distance Walked under Water',
   },
-} as Record<string, Record<string, string>>;
+} as Record<'mobs' | 'general' | 'items', Record<string, string>>;
 
 export default statNames;
