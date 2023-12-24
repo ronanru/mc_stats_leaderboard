@@ -39,7 +39,8 @@ const App: Component = () => {
       if (value > 1728000) return `${(value / 1728000).toFixed(2)} days`;
       if (value > 72000) return `${(value / 72000).toFixed(2)} hours`;
       if (value > 1200) return `${(value / 1200).toFixed(2)} minutes`;
-      return `${value.toFixed(2)} seconds`;
+      if (value > 20) return `${(value / 20).toFixed(2)} seconds`;
+      return `${value.toFixed(2)} ticks`;
     }
     return value.toString();
   };
