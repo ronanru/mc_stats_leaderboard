@@ -36,9 +36,9 @@ const App: Component = () => {
     if (currentGroup() === 'items' && value > 64)
       return `${(value / 64).toFixed(2)} stacks`;
     if (stat().endsWith('_time') || stat().startsWith('time_')) {
-      if (value > 86400) return `${(value / 86400).toFixed(2)} days`;
-      if (value > 3600) return `${(value / 3600).toFixed(2)} hours`;
-      if (value > 60) return `${(value / 60).toFixed(2)} minutes`;
+      if (value > 1728000) return `${(value / 1728000).toFixed(2)} days`;
+      if (value > 72000) return `${(value / 72000).toFixed(2)} hours`;
+      if (value > 1200) return `${(value / 1200).toFixed(2)} minutes`;
       return `${value.toFixed(2)} seconds`;
     }
     return value.toString();
@@ -75,7 +75,7 @@ const App: Component = () => {
         {(Object.keys(groups) as (keyof typeof groups)[]).map(g => (
           <button
             role="tab"
-            class={clsx(['btn', group() in groups[g] && 'bg-zinc-900'])}
+            class={clsx(['btn', groups[g].includes(group()) && 'bg-zinc-900'])}
             onClick={() => setGroup(groups[g][0])}>
             {upperCaseFirstLetter(g)}
           </button>
