@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .btn {
-  @apply cursor-pointer rounded-md py-1.5 px-6 text-center font-medium transition-colors duration-300 hover:bg-zinc-900;
+  @apply cursor-pointer rounded-md px-6 py-1.5 text-center font-medium transition-colors duration-300 hover:bg-zinc-900;
 }
 
 .custom-scroll {

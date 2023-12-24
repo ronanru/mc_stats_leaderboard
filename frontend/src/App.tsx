@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { Component, createEffect, createSignal } from 'solid-js';
-import { getStats, Stat } from './api';
+import { Stat, getStats } from './api';
 import ScrollDetector from './components/ScrollDetector';
 import SearchSelect from './components/SearchSelect';
 import Select from './components/Select';
@@ -11,20 +11,20 @@ const groups = {
   general: ['custom'],
   items: ['crafted', 'mined', 'picked_up', 'dropped', 'broken', 'used'],
   mobs: ['killed', 'killed_by'],
-} as const;
+};
 
 const App: Component = () => {
   const [group, setGroup] =
     createSignal<(typeof groups)[keyof typeof groups][number]>('custom');
   const [page, setPage] = createSignal(0);
   const [stat, setStat] = createSignal<string>(
-    Object.keys(statNames.general)[0]
+    Object.keys(statNames.general)[0],
   );
   const [stats, setStats] = createSignal<Stat[]>([]);
 
   const currentGroup = () =>
-    Object.entries(groups).find(
-      ([_, g]) => group() in g
+    Object.entries(groups).find(([_, g]) =>
+      g.includes(group()),
     )![0] as keyof typeof groups;
 
   createEffect(() => {
@@ -71,7 +71,7 @@ const App: Component = () => {
     <>
       <section
         role="tablist"
-        class="custom-scroll grid grid-cols-3 items-center gap-2 overflow-x-auto rounded-xl bg-zinc-800 py-2 px-4 sm:flex">
+        class="custom-scroll grid grid-cols-3 items-center gap-2 overflow-x-auto rounded-xl bg-zinc-800 px-4 py-2 sm:flex">
         {(Object.keys(groups) as (keyof typeof groups)[]).map(g => (
           <button
             role="tab"
@@ -101,7 +101,7 @@ const App: Component = () => {
             ([value, name]) => ({
               value,
               name,
-            })
+            }),
           )}
         />
       </section>

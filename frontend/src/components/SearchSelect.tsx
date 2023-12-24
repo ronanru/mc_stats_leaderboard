@@ -18,7 +18,7 @@ const SearchSelect: Component<{
 }> = props => {
   const [isOpen, setIsOpen] = createSignal(false);
   const [inputValue, setInputValue] = createSignal(
-    props.items.find(item => item.value === props.value)?.name || ''
+    props.items.find(item => item.value === props.value)?.name || '',
   );
   const [selectedValue, setSelectedValue] = createSignal(props.value);
 
@@ -39,7 +39,7 @@ const SearchSelect: Component<{
 
   createEffect(() => {
     setInputValue(
-      props.items.find(item => item.value === props.value)?.name || ''
+      props.items.find(item => item.value === props.value)?.name || '',
     );
   });
 
@@ -62,7 +62,7 @@ const SearchSelect: Component<{
         const newItem = shownItems().at(
           (shownItems().findIndex(({ value }) => value === selectedValue()) +
             (e.code === 'ArrowDown' ? 1 : -1)) %
-            shownItems().length
+            shownItems().length,
         );
         if (!newItem) break;
         setSelectedValue(newItem.value);

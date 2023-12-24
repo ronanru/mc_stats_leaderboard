@@ -15,6 +15,6 @@ export const getStats = async (params: {
   for (const [key, value] of Object.entries(params))
     searchParams.append(key, value.toString());
   return fetch(`/api/stats?${searchParams.toString()}`).then(res =>
-    res.json()
+    res.json(),
   ) as Promise<Stat[]>;
 };

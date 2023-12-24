@@ -4,7 +4,7 @@ const ScrollDetector: Component<{
   onScroll: () => void;
 }> = props => {
   const observer = new IntersectionObserver(
-    ([entry]) => entry.isIntersecting && props.onScroll()
+    ([entry]) => entry.isIntersecting && props.onScroll(),
   );
 
   onCleanup(() => observer.disconnect());

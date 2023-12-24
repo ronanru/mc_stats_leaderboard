@@ -38,7 +38,7 @@ const Select: Component<{
   const onKeyDown = (e: KeyboardEvent) => {
     if (
       !['ArrowUp', 'ArrowDown', 'KeyJ', 'KeyK', 'Space', 'Enter'].includes(
-        e.code
+        e.code,
       )
     )
       return;
@@ -51,7 +51,7 @@ const Select: Component<{
         const newItem = props.items.at(
           (props.items.findIndex(({ value }) => value === selectedValue()) +
             (['ArrowDown', 'KeyJ'].includes(e.code) ? 1 : -1)) %
-            props.items.length
+            props.items.length,
         );
         if (!newItem) break;
         setSelectedValue(newItem.value);
